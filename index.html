@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>GymAI v1 — Your AI Trainer</title>
+<title>GymAI v2 — Your AI Trainer</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,7 +158,7 @@
   <!-- ══════════ LOGIN ══════════ -->
   <div id="screen-login" class="auth-wrap">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v1</div>
+      <div class="auth-logo">💪 GYMAI v2</div>
       <div class="auth-sub">Your AI personal trainer</div>
       <div class="form-group">
         <label>Your ID</label>
@@ -188,7 +188,7 @@
   <!-- ══════════ SETUP ══════════ -->
   <div id="screen-setup" class="auth-wrap hidden">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v1</div>
+      <div class="auth-logo">💪 GYMAI v2</div>
       <div class="auth-sub">Create your profile</div>
       <div class="form-group">
         <label>Your unique ID (to log in)</label>
@@ -249,7 +249,7 @@
     <div id="tab-home" class="screen active">
       <div class="topbar">
         <div>
-          <h1>💪 GYMAI v1</h1>
+          <h1>💪 GYMAI v2</h1>
           <div class="sub" id="home-greeting">Hi there</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="doLogout()">Log out</button>
@@ -1229,61 +1229,122 @@ function saveApiKey() {
 
 
 // ══════════════════════════════════════════════════════
-// EXERCISE GIF LOADER (ExerciseDB)
 // ══════════════════════════════════════════════════════
+// EXERCISE GIF LOADER
+// ══════════════════════════════════════════════════════
+
+// Maps common exercise names to ExerciseDB gif IDs (from public GitHub repo)
+const EXERCISE_GIFS = {
+  // Chest
+  'bench press': '0025', 'push up': '0557', 'pushup': '0557', 'incline bench press': '0030',
+  'decline bench press': '0026', 'chest fly': '1309', 'dumbbell fly': '0272', 'cable fly': '1309',
+  'chest dip': '0182', 'dip': '0182', 'pec deck': '0650',
+  // Shoulders
+  'shoulder press': '0526', 'overhead press': '0526', 'military press': '0526',
+  'lateral raise': '0641', 'front raise': '0268', 'arnold press': '0033',
+  'face pull': '0464', 'upright row': '0674', 'reverse fly': '0641',
+  // Biceps
+  'bicep curl': '0281', 'biceps curl': '0281', 'curl': '0281', 'hammer curl': '0299',
+  'concentration curl': '0072', 'preacher curl': '0089', 'incline curl': '0315',
+  'cable curl': '0085', 'barbell curl': '0017',
+  // Triceps
+  'tricep pushdown': '0680', 'triceps pushdown': '0680', 'pushdown': '0680',
+  'tricep extension': '0678', 'skull crusher': '0396', 'overhead tricep': '0678',
+  'close grip bench': '0075', 'tricep dip': '0388', 'kickback': '0339',
+  // Back / Lats
+  'pull up': '0555', 'pullup': '0555', 'chin up': '0059', 'lat pulldown': '0346',
+  'seated row': '0610', 'bent over row': '0047', 'barbell row': '0047',
+  'dumbbell row': '0291', 't-bar row': '0649', 'cable row': '0610',
+  'deadlift': '0175', 'rack pull': '0575',
+  // Traps
+  'shrug': '0638', 'barbell shrug': '0638', 'dumbbell shrug': '0292',
+  // Lower back
+  'hyperextension': '1461', 'back extension': '1461', 'good morning': '0288',
+  'superman': '0629', 'romanian deadlift': '0185',
+  // Abs
+  'crunch': '0097', 'sit up': '0620', 'situp': '0620', 'plank': '0536',
+  'leg raise': '0356', 'russian twist': '0601', 'bicycle crunch': '0058',
+  'cable crunch': '0084', 'ab wheel': '0002', 'hollow hold': '1471',
+  // Obliques
+  'side plank': '0618', 'wood chop': '0697', 'oblique crunch': '0512',
+  // Glutes
+  'hip thrust': '0307', 'glute bridge': '1569', 'donkey kick': '0195',
+  'fire hydrant': '0235', 'cable kickback': '0079',
+  // Quads
+  'squat': '0685', 'barbell squat': '0685', 'front squat': '0264',
+  'leg press': '0365', 'leg extension': '0364', 'lunge': '0392',
+  'split squat': '0743', 'bulgarian split squat': '0743', 'goblet squat': '0285',
+  'hack squat': '0698', 'step up': '0628',
+  // Hamstrings
+  'leg curl': '0363', 'lying leg curl': '0366', 'nordic curl': '0507',
+  'stiff leg deadlift': '0228', 'sumo deadlift': '0636',
+  // Calves
+  'calf raise': '0056', 'seated calf raise': '0615', 'standing calf raise': '0056',
+  // Cardio / Full body
+  'burpee': '0056', 'jumping jack': '0793', 'mountain climber': '0478',
+  'box jump': '0062', 'kettlebell swing': '0335',
+};
+
+function findGifId(exerciseName) {
+  const name = exerciseName.toLowerCase().trim();
+  // Exact match
+  if (EXERCISE_GIFS[name]) return EXERCISE_GIFS[name];
+  // Partial match - find best key that appears in name
+  let bestKey = null, bestLen = 0;
+  for (const key of Object.keys(EXERCISE_GIFS)) {
+    if (name.includes(key) && key.length > bestLen) {
+      bestKey = key; bestLen = key.length;
+    }
+  }
+  if (bestKey) return EXERCISE_GIFS[bestKey];
+  // Reverse - check if any word of exercise name matches a key
+  for (const word of name.split(' ')) {
+    if (word.length > 3) {
+      for (const key of Object.keys(EXERCISE_GIFS)) {
+        if (key.includes(word)) return EXERCISE_GIFS[key];
+      }
+    }
+  }
+  return null;
+}
+
 async function loadExerciseGifs(exercises) {
   for (let i = 0; i < exercises.length; i++) {
     const ex = exercises[i];
     const gifEl = document.getElementById('gif-' + i);
     if (!gifEl) continue;
-    try {
-      // Search ExerciseDB by exercise name
-      const query = ex.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
-      const res = await fetch(`https://exercisedb.p.rapidapi.com/exercises/name/${encodeURIComponent(query)}?limit=1`, {
-        headers: {
-          'X-RapidAPI-Key': 'DEMO',
-          'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
-        }
-      });
-      // ExerciseDB requires paid key - use free mirror instead
-      throw new Error('use free mirror');
-    } catch(e) {
-      // Use free ExerciseDB mirror (no key needed)
+
+    const gifId = findGifId(ex.name);
+    if (gifId) {
+      const url = `https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/images/${gifId}/0.jpg`;
+      gifEl.innerHTML = `<img src="${url}" 
+        style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;background:#111" 
+        alt="${ex.name}"
+        onerror="this.parentElement.innerHTML='<div style=\'padding:14px;text-align:center\'><span style=\'font-size:12px;color:var(--muted)\'>No demo available</span></div>'" />`;
+    } else {
+      // Try fetching from free-exercise-db search
       try {
-        const query = ex.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
-        const res = await fetch(`https://exercisedb-api.vercel.app/api/v1/exercises/name/${encodeURIComponent(query)}?limit=1`);
+        const res = await fetch('https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json');
         if (res.ok) {
-          const data = await res.json();
-          const exercise = data?.data?.exercises?.[0] || data?.[0];
-          if (exercise?.gifUrl) {
-            gifEl.innerHTML = `<img src="${exercise.gifUrl}" style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;display:block;background:#111" alt="${ex.name}" />`;
-            continue;
+          const all = await res.json();
+          const name = ex.name.toLowerCase();
+          const match = all.find(e => 
+            e.name.toLowerCase().includes(name.split(' ')[0]) ||
+            name.includes(e.name.toLowerCase().split(' ')[0])
+          );
+          if (match && match.images?.[0]) {
+            const base = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+            gifEl.innerHTML = `<img src="${base}${match.images[0]}" 
+              style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;background:#111" 
+              alt="${ex.name}"
+              onerror="this.parentElement.innerHTML='<div style=\'padding:14px;text-align:center\'><span style=\'font-size:12px;color:var(--muted)\'>No demo available</span></div>'" />`;
+          } else {
+            gifEl.innerHTML = `<div style="padding:14px;text-align:center"><span style="font-size:12px;color:var(--muted)">No demo available</span></div>`;
           }
         }
-      } catch(e2) {}
-      
-      // Final fallback: search by body part / muscle
-      try {
-        const muscle = ex.muscleTargets?.[0]?.toLowerCase().replace(/[^a-z]/g, '') || 'chest';
-        const res2 = await fetch(`https://exercisedb-api.vercel.app/api/v1/exercises/bodyPart/${encodeURIComponent(muscle)}?limit=5`);
-        if (res2.ok) {
-          const data2 = await res2.json();
-          const exercises = data2?.data?.exercises || data2 || [];
-          // Find best match by name similarity
-          let best = exercises[0];
-          for (const candidate of exercises) {
-            if (candidate.name?.toLowerCase().includes(ex.name.split(' ')[0].toLowerCase())) {
-              best = candidate; break;
-            }
-          }
-          if (best?.gifUrl) {
-            gifEl.innerHTML = `<img src="${best.gifUrl}" style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;display:block;background:#111" alt="${ex.name}" />`;
-            continue;
-          }
-        }
-      } catch(e3) {}
-      
-      gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:16px;display:block;text-align:center">No demo available</span>`;
+      } catch(e) {
+        gifEl.innerHTML = `<div style="padding:14px;text-align:center"><span style="font-size:12px;color:var(--muted)">No demo available</span></div>`;
+      }
     }
   }
 }
