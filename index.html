@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>GymAI v2 — Your AI Trainer</title>
+<title>GymAI v3 — Your AI Trainer</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,7 +158,7 @@
   <!-- ══════════ LOGIN ══════════ -->
   <div id="screen-login" class="auth-wrap">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v2</div>
+      <div class="auth-logo">💪 GYMAI v3</div>
       <div class="auth-sub">Your AI personal trainer</div>
       <div class="form-group">
         <label>Your ID</label>
@@ -188,7 +188,7 @@
   <!-- ══════════ SETUP ══════════ -->
   <div id="screen-setup" class="auth-wrap hidden">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v2</div>
+      <div class="auth-logo">💪 GYMAI v3</div>
       <div class="auth-sub">Create your profile</div>
       <div class="form-group">
         <label>Your unique ID (to log in)</label>
@@ -249,7 +249,7 @@
     <div id="tab-home" class="screen active">
       <div class="topbar">
         <div>
-          <h1>💪 GYMAI v2</h1>
+          <h1>💪 GYMAI v3</h1>
           <div class="sub" id="home-greeting">Hi there</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="doLogout()">Log out</button>
@@ -1230,79 +1230,126 @@ function saveApiKey() {
 
 // ══════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════
-// EXERCISE GIF LOADER
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// EXERCISE VISUAL LOADER
 // ══════════════════════════════════════════════════════
 
-// Maps common exercise names to ExerciseDB gif IDs (from public GitHub repo)
-const EXERCISE_GIFS = {
-  // Chest
-  'bench press': '0025', 'push up': '0557', 'pushup': '0557', 'incline bench press': '0030',
-  'decline bench press': '0026', 'chest fly': '1309', 'dumbbell fly': '0272', 'cable fly': '1309',
-  'chest dip': '0182', 'dip': '0182', 'pec deck': '0650',
-  // Shoulders
-  'shoulder press': '0526', 'overhead press': '0526', 'military press': '0526',
-  'lateral raise': '0641', 'front raise': '0268', 'arnold press': '0033',
-  'face pull': '0464', 'upright row': '0674', 'reverse fly': '0641',
-  // Biceps
-  'bicep curl': '0281', 'biceps curl': '0281', 'curl': '0281', 'hammer curl': '0299',
-  'concentration curl': '0072', 'preacher curl': '0089', 'incline curl': '0315',
-  'cable curl': '0085', 'barbell curl': '0017',
-  // Triceps
-  'tricep pushdown': '0680', 'triceps pushdown': '0680', 'pushdown': '0680',
-  'tricep extension': '0678', 'skull crusher': '0396', 'overhead tricep': '0678',
-  'close grip bench': '0075', 'tricep dip': '0388', 'kickback': '0339',
-  // Back / Lats
-  'pull up': '0555', 'pullup': '0555', 'chin up': '0059', 'lat pulldown': '0346',
-  'seated row': '0610', 'bent over row': '0047', 'barbell row': '0047',
-  'dumbbell row': '0291', 't-bar row': '0649', 'cable row': '0610',
-  'deadlift': '0175', 'rack pull': '0575',
-  // Traps
-  'shrug': '0638', 'barbell shrug': '0638', 'dumbbell shrug': '0292',
-  // Lower back
-  'hyperextension': '1461', 'back extension': '1461', 'good morning': '0288',
-  'superman': '0629', 'romanian deadlift': '0185',
-  // Abs
-  'crunch': '0097', 'sit up': '0620', 'situp': '0620', 'plank': '0536',
-  'leg raise': '0356', 'russian twist': '0601', 'bicycle crunch': '0058',
-  'cable crunch': '0084', 'ab wheel': '0002', 'hollow hold': '1471',
-  // Obliques
-  'side plank': '0618', 'wood chop': '0697', 'oblique crunch': '0512',
-  // Glutes
-  'hip thrust': '0307', 'glute bridge': '1569', 'donkey kick': '0195',
-  'fire hydrant': '0235', 'cable kickback': '0079',
-  // Quads
-  'squat': '0685', 'barbell squat': '0685', 'front squat': '0264',
-  'leg press': '0365', 'leg extension': '0364', 'lunge': '0392',
-  'split squat': '0743', 'bulgarian split squat': '0743', 'goblet squat': '0285',
-  'hack squat': '0698', 'step up': '0628',
-  // Hamstrings
-  'leg curl': '0363', 'lying leg curl': '0366', 'nordic curl': '0507',
-  'stiff leg deadlift': '0228', 'sumo deadlift': '0636',
-  // Calves
-  'calf raise': '0056', 'seated calf raise': '0615', 'standing calf raise': '0056',
-  // Cardio / Full body
-  'burpee': '0056', 'jumping jack': '0793', 'mountain climber': '0478',
-  'box jump': '0062', 'kettlebell swing': '0335',
+// YouTube video IDs for common exercises - these are stable tutorial videos
+const EXERCISE_VIDEOS = {
+  'barbell back squat':       'bEv6CCg2BC8',
+  'barbell squat':            'bEv6CCg2BC8',
+  'squat':                    'bEv6CCg2BC8',
+  'front squat':              'uYumuL_G_V0',
+  'goblet squat':             'MxsFDhcyFyE',
+  'bulgarian split squat':    'VstHZNkaCkU',
+  'split squat':              'VstHZNkaCkU',
+  'walking lunge':            'L8fvypPrv1s',
+  'lunge':                    'L8fvypPrv1s',
+  'leg press':                'IZxyjW7MPJQ',
+  'leg extension':            'YyvSfVjQeL0',
+  'leg curl':                 'ELOCsoDSmrg',
+  'lying leg curl':           'ELOCsoDSmrg',
+  'romanian deadlift':        'JCXUYuzwNrM',
+  'stiff leg deadlift':       'JCXUYuzwNrM',
+  'deadlift':                 'op9kVnSso6Q',
+  'sumo deadlift':            'WJgetl7FFWU',
+  'hip thrust':               'xDmFkJxPzeM',
+  'glute bridge':             'wPM8icPu6H8',
+  'donkey kick':              'SJ1Xuz9LLZk',
+  'calf raise':               'gwLzBJYoWlQ',
+  'seated calf raise':        'JbyjNymZOt0',
+  'step up':                  'dQqApCGd5Ss',
+  'bench press':              'rT7DgCr-3pg',
+  'incline bench press':      'DbFgADa2PL8',
+  'decline bench press':      'LfyQTju6RPo',
+  'push up':                  'IODxDxX7oi4',
+  'pushup':                   'IODxDxX7oi4',
+  'chest fly':                'eozdVDA78K0',
+  'dumbbell fly':             'eozdVDA78K0',
+  'cable fly':                'Iwe6AmxVf7o',
+  'dip':                      '2z8JmcrW-As',
+  'chest dip':                '2z8JmcrW-As',
+  'shoulder press':           'qEwKCR5JCog',
+  'overhead press':           'qEwKCR5JCog',
+  'military press':           'qEwKCR5JCog',
+  'dumbbell shoulder press':  'qSED9d7bGY8',
+  'arnold press':             '6Z15_WdXmVw',
+  'lateral raise':            'kDqklk1ZESo',
+  'front raise':              'sOoBOHHOrYk',
+  'face pull':                'rep-qVOkqgk',
+  'upright row':              'VuDTQLwmk6I',
+  'reverse fly':              'Gkl8_9G_pRc',
+  'pull up':                  'eGo4IYlbE5g',
+  'pullup':                   'eGo4IYlbE5g',
+  'chin up':                  'eGo4IYlbE5g',
+  'lat pulldown':             'CAwf7n6Luuc',
+  'seated row':               'GZbfZ033f74',
+  'cable row':                'GZbfZ033f74',
+  'bent over row':            'FWJR5Ve8bnQ',
+  'barbell row':              'FWJR5Ve8bnQ',
+  'dumbbell row':             'pYcpY20QaE8',
+  't-bar row':                'j4y4BuNT3L4',
+  'shrug':                    'g6qbq4Lf1FI',
+  'barbell shrug':            'g6qbq4Lf1FI',
+  'hyperextension':           'ph3pddpKzzw',
+  'back extension':           'ph3pddpKzzw',
+  'good morning':             'YA-h3n9L4YU',
+  'bicep curl':               '5jdHKPYQlMI',
+  'biceps curl':              '5jdHKPYQlMI',
+  'barbell curl':             'kwG2ipFRgfo',
+  'hammer curl':              'TwD-YGVP4Bk',
+  'concentration curl':       '0AUGkch3tzc',
+  'preacher curl':            'fIWP-FRFNU0',
+  'incline curl':             'soxrZlIl35U',
+  'cable curl':               'NFzTWp2qpiE',
+  'curl':                     '5jdHKPYQlMI',
+  'tricep pushdown':          'vB5OHsJ3EME',
+  'triceps pushdown':         'vB5OHsJ3EME',
+  'pushdown':                 'vB5OHsJ3EME',
+  'skull crusher':            'd_KZxkY_0cM',
+  'tricep extension':         'nRiJVZDpdL0',
+  'overhead tricep':          'nRiJVZDpdL0',
+  'close grip bench':         'cXbSJHtjrQQ',
+  'kickback':                 '6SS6K3lAwZ8',
+  'crunch':                   'Xyd_fa5zoEU',
+  'sit up':                   '_HDAbAjkYNE',
+  'situp':                    '_HDAbAjkYNE',
+  'plank':                    'ASdvN_XEl_c',
+  'leg raise':                'JB2oyawG9KI',
+  'russian twist':            'wkD8rjkodUI',
+  'bicycle crunch':           '9FGilxCbdz8',
+  'mountain climber':         'nmwgirgXLYM',
+  'ab wheel':                 'A5p2fZEF7AQ',
+  'cable crunch':             'AV5PnGVhCEE',
+  'side plank':               '_rdfjFSFKMY',
+  'oblique crunch':           'XKgCQGtPZCQ',
+  'wood chop':                'kWR6_jRPFYA',
+  'burpee':                   'TU8QYVW0gDU',
+  'jumping jack':             'c4DAnQ6DtF8',
+  'box jump':                 'NBY9-kTuHEk',
+  'kettlebell swing':         'sSESeQAir2M',
+  'forearm curl':             'UEMR7dfkRjk',
+  'wrist curl':               'UEMR7dfkRjk',
+  'reverse curl':             'nBGBoMpqFzo',
 };
 
-function findGifId(exerciseName) {
+function findVideoId(exerciseName) {
   const name = exerciseName.toLowerCase().trim();
-  // Exact match
-  if (EXERCISE_GIFS[name]) return EXERCISE_GIFS[name];
-  // Partial match - find best key that appears in name
+  if (EXERCISE_VIDEOS[name]) return EXERCISE_VIDEOS[name];
+  // Partial match - longest key wins
   let bestKey = null, bestLen = 0;
-  for (const key of Object.keys(EXERCISE_GIFS)) {
+  for (const key of Object.keys(EXERCISE_VIDEOS)) {
     if (name.includes(key) && key.length > bestLen) {
       bestKey = key; bestLen = key.length;
     }
   }
-  if (bestKey) return EXERCISE_GIFS[bestKey];
-  // Reverse - check if any word of exercise name matches a key
-  for (const word of name.split(' ')) {
-    if (word.length > 3) {
-      for (const key of Object.keys(EXERCISE_GIFS)) {
-        if (key.includes(word)) return EXERCISE_GIFS[key];
-      }
+  if (bestKey) return EXERCISE_VIDEOS[bestKey];
+  // Word match
+  const words = name.split(' ').filter(w => w.length > 3);
+  for (const word of words) {
+    for (const key of Object.keys(EXERCISE_VIDEOS)) {
+      if (key.includes(word)) return EXERCISE_VIDEOS[key];
     }
   }
   return null;
@@ -1314,37 +1361,34 @@ async function loadExerciseGifs(exercises) {
     const gifEl = document.getElementById('gif-' + i);
     if (!gifEl) continue;
 
-    const gifId = findGifId(ex.name);
-    if (gifId) {
-      const url = `https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/images/${gifId}/0.jpg`;
-      gifEl.innerHTML = `<img src="${url}" 
-        style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;background:#111" 
-        alt="${ex.name}"
-        onerror="this.parentElement.innerHTML='<div style=\'padding:14px;text-align:center\'><span style=\'font-size:12px;color:var(--muted)\'>No demo available</span></div>'" />`;
+    const videoId = findVideoId(ex.name);
+    const ytQuery = encodeURIComponent(ex.name + ' exercise how to');
+
+    if (videoId) {
+      const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      gifEl.innerHTML = `
+        <a href="${ytUrl}" target="_blank" style="display:block;position:relative;border-radius:10px;overflow:hidden;cursor:pointer">
+          <img src="${thumb}" style="width:100%;display:block;border-radius:10px" alt="${ex.name}" />
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            background:rgba(0,0,0,0.75);border-radius:50%;width:52px;height:52px;
+            display:flex;align-items:center;justify-content:center">
+            <div style="width:0;height:0;border-style:solid;border-width:10px 0 10px 20px;
+              border-color:transparent transparent transparent #fff;margin-left:4px"></div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);
+            padding:6px 10px;font-size:11px;color:#fff;border-radius:0 0 10px 10px">
+            ▶ Tap to watch tutorial
+          </div>
+        </a>`;
     } else {
-      // Try fetching from free-exercise-db search
-      try {
-        const res = await fetch('https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json');
-        if (res.ok) {
-          const all = await res.json();
-          const name = ex.name.toLowerCase();
-          const match = all.find(e => 
-            e.name.toLowerCase().includes(name.split(' ')[0]) ||
-            name.includes(e.name.toLowerCase().split(' ')[0])
-          );
-          if (match && match.images?.[0]) {
-            const base = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
-            gifEl.innerHTML = `<img src="${base}${match.images[0]}" 
-              style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;background:#111" 
-              alt="${ex.name}"
-              onerror="this.parentElement.innerHTML='<div style=\'padding:14px;text-align:center\'><span style=\'font-size:12px;color:var(--muted)\'>No demo available</span></div>'" />`;
-          } else {
-            gifEl.innerHTML = `<div style="padding:14px;text-align:center"><span style="font-size:12px;color:var(--muted)">No demo available</span></div>`;
-          }
-        }
-      } catch(e) {
-        gifEl.innerHTML = `<div style="padding:14px;text-align:center"><span style="font-size:12px;color:var(--muted)">No demo available</span></div>`;
-      }
+      gifEl.innerHTML = `
+        <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank"
+          style="display:flex;align-items:center;justify-content:center;gap:10px;
+          padding:16px;background:var(--bg3);border-radius:10px;text-decoration:none">
+          <span style="font-size:24px">▶</span>
+          <span style="font-size:13px;color:var(--accent)">Watch ${ex.name} tutorial on YouTube</span>
+        </a>`;
     }
   }
 }
