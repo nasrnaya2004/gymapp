@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>GymAI — Your AI Trainer</title>
+<title>GymAI v1 — Your AI Trainer</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,7 +158,7 @@
   <!-- ══════════ LOGIN ══════════ -->
   <div id="screen-login" class="auth-wrap">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI</div>
+      <div class="auth-logo">💪 GYMAI v1</div>
       <div class="auth-sub">Your AI personal trainer</div>
       <div class="form-group">
         <label>Your ID</label>
@@ -188,7 +188,7 @@
   <!-- ══════════ SETUP ══════════ -->
   <div id="screen-setup" class="auth-wrap hidden">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI</div>
+      <div class="auth-logo">💪 GYMAI v1</div>
       <div class="auth-sub">Create your profile</div>
       <div class="form-group">
         <label>Your unique ID (to log in)</label>
@@ -249,7 +249,7 @@
     <div id="tab-home" class="screen active">
       <div class="topbar">
         <div>
-          <h1>💪 GYMAI</h1>
+          <h1>💪 GYMAI v1</h1>
           <div class="sub" id="home-greeting">Hi there</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="doLogout()">Log out</button>
@@ -1229,7 +1229,7 @@ function saveApiKey() {
 
 
 // ══════════════════════════════════════════════════════
-// EXERCISE GIF LOADER
+// EXERCISE GIF LOADER (ExerciseDB)
 // ══════════════════════════════════════════════════════
 async function loadExerciseGifs(exercises) {
   for (let i = 0; i < exercises.length; i++) {
@@ -1237,25 +1237,53 @@ async function loadExerciseGifs(exercises) {
     const gifEl = document.getElementById('gif-' + i);
     if (!gifEl) continue;
     try {
-      const name = ex.name.split(' ')[0].toLowerCase();
-      const res = await fetch(`https://wger.de/api/v2/exercise/?format=json&language=2&limit=5&offset=0&term=${encodeURIComponent(ex.name)}`);
-      const data = await res.json();
-      // Try to find a matching exercise with an image
-      const exId = data.results?.[0]?.id;
-      if (exId) {
-        const imgRes = await fetch(`https://wger.de/api/v2/exerciseimage/?format=json&exercise_base=${exId}`);
-        const imgData = await imgRes.json();
-        if (imgData.results?.length > 0) {
-          const imgUrl = imgData.results[0].image;
-          gifEl.innerHTML = `<img src="${imgUrl}" style="width:100%;border-radius:10px;display:block" alt="${ex.name}" onerror="this.parentElement.innerHTML='<span style=\'font-size:12px;color:var(--muted);padding:12px\''>No image available</span>'" />`;
-        } else {
-          gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:12px">No image available</span>`;
+      // Search ExerciseDB by exercise name
+      const query = ex.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+      const res = await fetch(`https://exercisedb.p.rapidapi.com/exercises/name/${encodeURIComponent(query)}?limit=1`, {
+        headers: {
+          'X-RapidAPI-Key': 'DEMO',
+          'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
         }
-      } else {
-        gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:12px">No image available</span>`;
-      }
+      });
+      // ExerciseDB requires paid key - use free mirror instead
+      throw new Error('use free mirror');
     } catch(e) {
-      gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:12px">Could not load image</span>`;
+      // Use free ExerciseDB mirror (no key needed)
+      try {
+        const query = ex.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+        const res = await fetch(`https://exercisedb-api.vercel.app/api/v1/exercises/name/${encodeURIComponent(query)}?limit=1`);
+        if (res.ok) {
+          const data = await res.json();
+          const exercise = data?.data?.exercises?.[0] || data?.[0];
+          if (exercise?.gifUrl) {
+            gifEl.innerHTML = `<img src="${exercise.gifUrl}" style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;display:block;background:#111" alt="${ex.name}" />`;
+            continue;
+          }
+        }
+      } catch(e2) {}
+      
+      // Final fallback: search by body part / muscle
+      try {
+        const muscle = ex.muscleTargets?.[0]?.toLowerCase().replace(/[^a-z]/g, '') || 'chest';
+        const res2 = await fetch(`https://exercisedb-api.vercel.app/api/v1/exercises/bodyPart/${encodeURIComponent(muscle)}?limit=5`);
+        if (res2.ok) {
+          const data2 = await res2.json();
+          const exercises = data2?.data?.exercises || data2 || [];
+          // Find best match by name similarity
+          let best = exercises[0];
+          for (const candidate of exercises) {
+            if (candidate.name?.toLowerCase().includes(ex.name.split(' ')[0].toLowerCase())) {
+              best = candidate; break;
+            }
+          }
+          if (best?.gifUrl) {
+            gifEl.innerHTML = `<img src="${best.gifUrl}" style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;display:block;background:#111" alt="${ex.name}" />`;
+            continue;
+          }
+        }
+      } catch(e3) {}
+      
+      gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:16px;display:block;text-align:center">No demo available</span>`;
     }
   }
 }
