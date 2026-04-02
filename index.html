@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>GymAI v3 — Your AI Trainer</title>
+<title>GymAI v4 — Your AI Trainer</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,7 +158,7 @@
   <!-- ══════════ LOGIN ══════════ -->
   <div id="screen-login" class="auth-wrap">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v3</div>
+      <div class="auth-logo">💪 GYMAI v4</div>
       <div class="auth-sub">Your AI personal trainer</div>
       <div class="form-group">
         <label>Your ID</label>
@@ -188,7 +188,7 @@
   <!-- ══════════ SETUP ══════════ -->
   <div id="screen-setup" class="auth-wrap hidden">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v3</div>
+      <div class="auth-logo">💪 GYMAI v4</div>
       <div class="auth-sub">Create your profile</div>
       <div class="form-group">
         <label>Your unique ID (to log in)</label>
@@ -249,7 +249,7 @@
     <div id="tab-home" class="screen active">
       <div class="topbar">
         <div>
-          <h1>💪 GYMAI v3</h1>
+          <h1>💪 GYMAI v4</h1>
           <div class="sub" id="home-greeting">Hi there</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="doLogout()">Log out</button>
@@ -610,22 +610,13 @@
   </div>
 
   <!-- ══════════ ACTIVE WORKOUT ══════════ -->
-  <div id="screen-active" class="hidden" style="padding:16px 16px 30px">
-    <div class="flex-between" style="margin-bottom:16px">
+  <div id="screen-active" class="hidden" style="padding:16px 16px 40px">
+    <div class="flex-between" style="margin-bottom:20px">
       <button class="btn btn-secondary btn-sm" onclick="showScreen('app')">← Back</button>
       <div id="active-title" style="font-size:17px;font-weight:700;flex:1;margin:0 12px;text-align:center"></div>
-      <button class="btn btn-green btn-sm" onclick="finishWorkout()">Finish ✓</button>
+      <button class="btn btn-green btn-sm" onclick="finishWorkout()">Done ✓</button>
     </div>
-    <div id="timer-bar" class="timer-bar hidden">
-      <span style="font-size:14px;font-weight:600">Rest timer</span>
-      <span class="timer-val" id="timer-display">90s</span>
-    </div>
-    <div class="ex-tabs" id="ex-tabs"></div>
-    <div id="active-exercise"></div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button id="btn-prev" class="btn btn-secondary" style="flex:1" onclick="prevEx()">← Prev</button>
-      <button id="btn-next" class="btn btn-primary" style="flex:1" onclick="nextEx()">Next →</button>
-    </div>
+    <div id="active-exercise-list"></div>
   </div>
 
 </div>
@@ -986,123 +977,148 @@ function startGeneratedWorkout() {
 }
 
 function startWorkout() {
-  activeExIdx = 0;
-  activeSets = {};
-  activeWorkout.exercises.forEach((ex, i) => {
-    activeSets[i] = Array.from({ length: ex.sets }, () => ({
-      weight: ex.weight || 0,
-      reps: String(ex.reps).split('-')[0] || '10',
-      done: false
-    }));
-  });
   renderActiveWorkout();
   showScreen('active');
 }
 
 // ══════════════════════════════════════════════════════
-// ACTIVE WORKOUT
+// ACTIVE WORKOUT — simple checklist
 // ══════════════════════════════════════════════════════
+
+// Suggest weight based on profile + saved history
+function suggestWeight(ex, profile) {
+  // Check if user saved a weight for this exercise before
+  const savedKey = 'gymapp_weight_' + profile.id + '_' + ex.name.toLowerCase().replace(/\s+/g,'_');
+  const saved = localStorage.getItem(savedKey);
+  if (saved) return +saved;
+
+  // Base suggestion on bodyweight, sex, fitness level and exercise type
+  const bw = profile.weight || 70;
+  const isFemale = profile.sex === 'female';
+  const level = profile.fitnessLevel || 'intermediate';
+  const mult = level === 'beginner' ? 0.7 : level === 'advanced' ? 1.3 : 1.0;
+  const name = ex.name.toLowerCase();
+
+  let base = 0;
+  // Compound lower body
+  if (name.includes('squat') || name.includes('leg press'))     base = bw * (isFemale ? 0.55 : 0.75);
+  else if (name.includes('deadlift') || name.includes('hip thrust')) base = bw * (isFemale ? 0.6 : 0.85);
+  else if (name.includes('lunge') || name.includes('step up'))   base = bw * (isFemale ? 0.2 : 0.3);
+  // Compound upper body
+  else if (name.includes('bench press') || name.includes('chest press')) base = bw * (isFemale ? 0.3 : 0.5);
+  else if (name.includes('overhead press') || name.includes('shoulder press') || name.includes('military')) base = bw * (isFemale ? 0.2 : 0.35);
+  else if (name.includes('row') || name.includes('pulldown'))    base = bw * (isFemale ? 0.3 : 0.45);
+  // Isolation
+  else if (name.includes('curl'))                                  base = bw * (isFemale ? 0.12 : 0.18);
+  else if (name.includes('tricep') || name.includes('pushdown') || name.includes('extension')) base = bw * (isFemale ? 0.1 : 0.15);
+  else if (name.includes('lateral raise') || name.includes('fly')) base = bw * (isFemale ? 0.06 : 0.09);
+  else if (name.includes('calf raise'))                            base = bw * (isFemale ? 0.3 : 0.4);
+  else if (name.includes('leg curl') || name.includes('leg extension')) base = bw * (isFemale ? 0.25 : 0.35);
+  else if (name.includes('shrug'))                                 base = bw * (isFemale ? 0.3 : 0.5);
+  else if (name.includes('push up') || name.includes('pull up') || name.includes('dip') || name.includes('plank') || name.includes('crunch')) base = 0;
+  else base = bw * (isFemale ? 0.15 : 0.22);
+
+  return Math.round((base * mult) / 2.5) * 2.5; // round to nearest 2.5kg
+}
+
+function saveExerciseWeight(exName, weight) {
+  const key = 'gymapp_weight_' + profile.id + '_' + exName.toLowerCase().replace(/\s+/g,'_');
+  localStorage.setItem(key, weight);
+}
+
 function renderActiveWorkout() {
   document.getElementById('active-title').textContent = activeWorkout.name;
+  let html = '';
 
-  // Tabs
-  const tabs = document.getElementById('ex-tabs');
-  tabs.innerHTML = activeWorkout.exercises.map((ex, i) => `
-    <button class="ex-tab" onclick="setActiveEx(${i})" id="ex-tab-${i}"
-      style="background:${i === activeExIdx ? 'var(--blue)' : 'var(--bg3)'};color:${i === activeExIdx ? '#fff' : 'var(--muted)'}">
-      ${i + 1}. ${ex.name}
-    </button>`).join('');
-
-  renderActiveExercise();
-
-  // Nav buttons
-  document.getElementById('btn-prev').style.display = activeExIdx === 0 ? 'none' : 'block';
-  document.getElementById('btn-next').style.display = activeExIdx === activeWorkout.exercises.length - 1 ? 'none' : 'block';
-}
-
-function renderActiveExercise() {
-  const ex = activeWorkout.exercises[activeExIdx];
-  const sets = activeSets[activeExIdx] || [];
-
-  let html = `
-    <div class="card">
-      <div class="ex-name" style="font-size:18px">${ex.name}</div>
-      <div class="ex-meta text-accent" style="margin-bottom:12px">${ex.muscleTargets?.join(', ')}</div>
-      ${ex.notes ? `<div class="info-box"><p>${ex.notes}</p></div>` : ''}
-      <div class="set-grid" style="margin-bottom:8px">
-        <div class="ex-meta">Set</div>
-        <div class="ex-meta">Weight (kg)</div>
-        <div class="ex-meta">Reps</div>
-        <div></div>
-      </div>`;
-
-  sets.forEach((s, si) => {
-    const bg = s.done ? 'rgba(22,163,74,0.15)' : 'var(--bg3)';
+  activeWorkout.exercises.forEach((ex, i) => {
+    const suggested = suggestWeight(ex, profile);
+    const isBodyweight = suggested === 0;
     html += `
-      <div class="set-grid">
-        <div class="set-num">${si + 1}</div>
-        <input class="set-input" type="number" value="${s.weight}" style="background:${bg}"
-          oninput="updateSet(${activeExIdx},${si},'weight',this.value)" />
-        <input class="set-input" type="text" value="${s.reps}" style="background:${bg}"
-          oninput="updateSet(${activeExIdx},${si},'reps',this.value)" />
-        <button class="set-done" onclick="logSet(${activeExIdx},${si})"
-          style="background:${s.done ? 'var(--green)' : 'var(--blue)'};color:#fff;${s.done ? 'cursor:default' : ''}">
-          ${s.done ? '✓' : 'Log'}
-        </button>
-      </div>`;
+    <div class="card" id="ex-card-${i}" style="margin-bottom:12px;transition:opacity 0.3s">
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <!-- Checkbox -->
+        <div onclick="toggleExDone(${i})" id="ex-check-${i}"
+          style="width:26px;height:26px;border-radius:8px;border:2px solid var(--border);
+          flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+          background:transparent;transition:all 0.2s">
+        </div>
+        <!-- Content -->
+        <div style="flex:1">
+          <div class="ex-name" id="ex-name-${i}">${ex.name}</div>
+          <div class="ex-meta" style="margin-bottom:10px">${ex.sets} sets × ${ex.reps} reps${ex.muscleTargets?.length ? ' · ' + ex.muscleTargets.join(', ') : ''}</div>
+
+          ${isBodyweight ? `
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--muted)">
+            Bodyweight exercise — no weight needed
+          </div>` : `
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Weight (kg)</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <button onclick="adjustWeight(${i}, -2.5)" style="width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">−</button>
+                <input type="number" id="weight-${i}" value="${suggested}" step="2.5" min="0"
+                  onchange="saveExerciseWeight('${ex.name}', this.value)"
+                  style="width:70px;padding:7px;border-radius:8px;border:1px solid var(--border);
+                  background:var(--bg3);color:var(--text);font-size:16px;font-weight:700;text-align:center;font-family:Barlow,sans-serif" />
+                <button onclick="adjustWeight(${i}, 2.5)" style="width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">+</button>
+                <span style="font-size:13px;color:var(--muted)">kg</span>
+              </div>
+            </div>
+          </div>`}
+
+          ${ex.notes ? `<div class="tip" style="margin-top:8px">💡 ${ex.notes}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
   });
 
-  if (ex.weightSuggestion) html += `<div class="tip" style="margin-top:10px">💡 ${ex.weightSuggestion}</div>`;
-  html += '</div>';
-
-  document.getElementById('active-exercise').innerHTML = html;
+  document.getElementById('active-exercise-list').innerHTML = html;
 }
 
-function setActiveEx(i) {
-  activeExIdx = i;
-  renderActiveWorkout();
+function adjustWeight(exIdx, delta) {
+  const input = document.getElementById('weight-' + exIdx);
+  if (!input) return;
+  const newVal = Math.max(0, Math.round((+input.value + delta) / 2.5) * 2.5);
+  input.value = newVal;
+  saveExerciseWeight(activeWorkout.exercises[exIdx].name, newVal);
 }
 
-function updateSet(exIdx, setIdx, field, value) {
-  activeSets[exIdx][setIdx][field] = field === 'weight' ? +value : value;
-}
-
-function logSet(exIdx, setIdx) {
-  if (activeSets[exIdx][setIdx].done) return;
-  activeSets[exIdx][setIdx].done = true;
-  const restSecs = activeWorkout.exercises[exIdx].restSeconds || 90;
-  startTimer(restSecs);
-  renderActiveExercise();
-}
-
-function prevEx() { if (activeExIdx > 0) { activeExIdx--; renderActiveWorkout(); } }
-function nextEx() { if (activeExIdx < activeWorkout.exercises.length - 1) { activeExIdx++; renderActiveWorkout(); } }
-
-function startTimer(secs) {
-  clearInterval(timerInterval);
-  timerVal = secs;
-  const bar = document.getElementById('timer-bar');
-  const display = document.getElementById('timer-display');
-  bar.classList.remove('hidden');
-  display.textContent = timerVal + 's';
-  timerInterval = setInterval(() => {
-    timerVal--;
-    display.textContent = timerVal + 's';
-    if (timerVal <= 0) { clearInterval(timerInterval); bar.classList.add('hidden'); }
-  }, 1000);
+function toggleExDone(i) {
+  const check = document.getElementById('ex-check-' + i);
+  const card = document.getElementById('ex-card-' + i);
+  const name = document.getElementById('ex-name-' + i);
+  const isDone = check.dataset.done === '1';
+  if (!isDone) {
+    check.dataset.done = '1';
+    check.style.background = 'var(--green)';
+    check.style.borderColor = 'var(--green)';
+    check.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+    card.style.opacity = '0.5';
+    name.style.textDecoration = 'line-through';
+    // Save weight when ticking done
+    const weightInput = document.getElementById('weight-' + i);
+    if (weightInput) saveExerciseWeight(activeWorkout.exercises[i].name, weightInput.value);
+  } else {
+    check.dataset.done = '0';
+    check.style.background = 'transparent';
+    check.style.borderColor = 'var(--border)';
+    check.innerHTML = '';
+    card.style.opacity = '1';
+    name.style.textDecoration = 'none';
+  }
 }
 
 function finishWorkout() {
-  clearInterval(timerInterval);
   const completed = {
     ...activeWorkout,
     id: Date.now(),
     date: new Date().toLocaleDateString('en-GB'),
-    exercises: activeWorkout.exercises.map((ex, i) => ({
-      ...ex,
-      weight: activeSets[i]?.[0]?.weight || 0,
-      completedSets: activeSets[i],
-    }))
+    exercises: activeWorkout.exercises.map((ex, i) => {
+      const weightInput = document.getElementById('weight-' + i);
+      const weight = weightInput ? +weightInput.value : (ex.weight || 0);
+      saveExerciseWeight(ex.name, weight);
+      return { ...ex, weight };
+    })
   };
   historyWorkouts.unshift(completed);
   save('history_' + profile.id, historyWorkouts);
