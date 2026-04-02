@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>GymAI v4 — Your AI Trainer</title>
+<title>GymAI v5 — Your AI Trainer</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,7 +158,7 @@
   <!-- ══════════ LOGIN ══════════ -->
   <div id="screen-login" class="auth-wrap">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v4</div>
+      <div class="auth-logo">💪 GYMAI v5</div>
       <div class="auth-sub">Your AI personal trainer</div>
       <div class="form-group">
         <label>Your ID</label>
@@ -188,7 +188,7 @@
   <!-- ══════════ SETUP ══════════ -->
   <div id="screen-setup" class="auth-wrap hidden">
     <div class="auth-box">
-      <div class="auth-logo">💪 GYMAI v4</div>
+      <div class="auth-logo">💪 GYMAI v5</div>
       <div class="auth-sub">Create your profile</div>
       <div class="form-group">
         <label>Your unique ID (to log in)</label>
@@ -249,7 +249,7 @@
     <div id="tab-home" class="screen active">
       <div class="topbar">
         <div>
-          <h1>💪 GYMAI v4</h1>
+          <h1>💪 GYMAI v5</h1>
           <div class="sub" id="home-greeting">Hi there</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="doLogout()">Log out</button>
@@ -607,6 +607,26 @@
       <button class="btn btn-secondary" style="flex:1" onclick="saveGeneratedWorkout()">Save for later</button>
     </div>
     <button class="btn btn-secondary mt-8" onclick="doGenerate()">🔄 Regenerate</button>
+  </div>
+
+  <!-- ══════════ WORKOUT DETAIL ══════════ -->
+  <div id="screen-detail" class="hidden" style="padding:16px 16px 40px">
+    <div class="flex-between" style="margin-bottom:20px">
+      <button class="btn btn-secondary btn-sm" onclick="showScreen('app')">← Back</button>
+      <div id="detail-title" style="font-size:17px;font-weight:700;flex:1;margin:0 10px;text-align:center"></div>
+      <button class="btn btn-green btn-sm" onclick="startDetailWorkout()">Start ▶</button>
+    </div>
+    <div id="detail-content"></div>
+    <!-- Add exercise panel -->
+    <div id="add-ex-panel" style="margin-top:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Add exercise</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="add-ex-input" type="text" placeholder="Exercise name (e.g. Cable Row)"
+          style="flex:1;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:14px;font-family:Barlow,sans-serif"/>
+        <button class="btn btn-primary btn-sm" onclick="addCustomExercise()" style="white-space:nowrap">+ Add</button>
+      </div>
+      <button class="btn btn-secondary" onclick="aiAddExercise()" style="font-size:13px">✨ Let AI suggest an exercise</button>
+    </div>
   </div>
 
   <!-- ══════════ ACTIVE WORKOUT ══════════ -->
@@ -1200,14 +1220,14 @@ function renderSaved() {
 function workoutCardHTML(w) {
   const muscles = w.targetMuscles?.map(k => MUSCLES[k]?.label || k).join(', ') || '';
   return `
-    <div class="wcard">
+    <div class="wcard" onclick="openWorkoutDetail(${w.id})" style="cursor:pointer">
       <div class="wcard-top">
         <div style="flex:1">
           <div class="wcard-name">${w.name}</div>
           <div class="wcard-meta">${w.date} · ${w.duration || '?'} min · ${w.exercises?.length || 0} exercises</div>
           ${muscles ? `<div class="wcard-muscles">${muscles}</div>` : ''}
         </div>
-        <div class="wcard-actions">
+        <div class="wcard-actions" onclick="event.stopPropagation()">
           <button class="btn btn-primary btn-sm" onclick="doStartSaved(${w.id})">Start</button>
           <button class="btn btn-secondary btn-sm" onclick="deleteSaved(${w.id})">✕</button>
         </div>
