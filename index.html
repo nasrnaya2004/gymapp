@@ -285,35 +285,277 @@
       <div class="topbar"><h1>New Workout</h1></div>
       <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Tap muscles on the body or use the buttons below</p>
       
-      <!-- SVG Body Map -->
-      <svg id="body-map" viewBox="80 40 240 340" width="260" height="350">
-        <!-- Silhouette -->
-        <ellipse cx="200" cy="68" rx="28" ry="26" fill="#2a2a35" stroke="#3a3a48" stroke-width="1.5"/>
-        <path d="M172 92 Q160 100 142 108 Q125 120 118 138 Q110 160 112 200 Q114 215 120 230 Q130 235 140 230 Q145 215 145 200 L145 155 Q160 148 175 148 L225 148 Q240 148 255 155 L255 200 Q255 215 260 230 Q270 235 280 230 Q286 215 288 200 Q290 160 282 138 Q275 120 258 108 Q242 100 228 92 Z" fill="#2a2a35" stroke="#3a3a48" stroke-width="1.5"/>
-        <path d="M142 108 Q118 130 100 170 Q96 190 98 210 Q108 215 118 205 Q125 180 130 160 L145 130 Z" fill="#2a2a35" stroke="#3a3a48" stroke-width="1.5"/>
-        <path d="M258 108 Q282 130 300 170 Q304 190 302 210 Q292 215 282 205 Q275 180 270 160 L255 130 Z" fill="#2a2a35" stroke="#3a3a48" stroke-width="1.5"/>
-        <ellipse cx="108" cy="217" rx="12" ry="10" fill="#2a2a35" stroke="#3a3a48" stroke-width="1"/>
-        <ellipse cx="292" cy="217" rx="12" ry="10" fill="#2a2a35" stroke="#3a3a48" stroke-width="1"/>
-        <path d="M175 230 Q170 250 165 300 Q163 320 164 355 Q175 360 183 355 Q186 320 186 300 L186 230 Z" fill="#2a2a35" stroke="#3a3a48" stroke-width="1.5"/>
-        <path d="M225 230 Q230 250 235 300 Q237 320 236 355 Q225 360 217 355 Q214 320 214 300 L214 230 Z" fill="#2a2a35" stroke="#3a3a48" stroke-width="1.5"/>
-        <ellipse cx="172" cy="360" rx="14" ry="8" fill="#2a2a35" stroke="#3a3a48" stroke-width="1"/>
-        <ellipse cx="228" cy="360" rx="14" ry="8" fill="#2a2a35" stroke="#3a3a48" stroke-width="1"/>
-        <!-- Muscle overlays -->
-        <path class="muscle" data-key="chest" d="M155 110 Q150 130 148 150 Q155 145 165 148 Q175 135 175 115 Z M245 110 Q250 130 252 150 Q245 145 235 148 Q225 135 225 115 Z" fill="#e05555" fill-opacity="0.25" onclick="toggleMuscle('chest')"/>
-        <path class="muscle" data-key="shoulders" d="M130 100 Q118 95 112 110 Q115 125 128 130 Q140 120 142 108 Z M270 100 Q282 95 288 110 Q285 125 272 130 Q260 120 258 108 Z" fill="#e08040" fill-opacity="0.25" onclick="toggleMuscle('shoulders')"/>
-        <path class="muscle" data-key="biceps" d="M108 135 Q100 150 102 165 Q112 170 120 162 Q124 148 120 133 Z M292 135 Q300 150 298 165 Q288 170 280 162 Q276 148 280 133 Z" fill="#d4a017" fill-opacity="0.25" onclick="toggleMuscle('biceps')"/>
-        <path class="muscle" data-key="triceps" d="M108 135 Q96 145 94 162 Q104 168 114 158 Q118 145 115 132 Z M292 135 Q304 145 306 162 Q296 168 286 158 Q282 145 285 132 Z" fill="#8bc34a" fill-opacity="0.25" onclick="toggleMuscle('triceps')"/>
-        <path class="muscle" data-key="forearms" d="M100 168 Q92 185 94 200 Q105 204 112 196 Q116 180 112 168 Z M300 168 Q308 185 306 200 Q295 204 288 196 Q284 180 288 168 Z" fill="#26c6da" fill-opacity="0.25" onclick="toggleMuscle('forearms')"/>
-        <path class="muscle" data-key="abs" d="M175 155 Q165 165 165 200 Q165 215 175 220 Q185 215 185 200 Q185 165 175 155 Z M200 155 Q210 165 212 200 Q212 215 205 220 Q198 215 198 200 Q198 165 200 155 Z" fill="#4fc3f7" fill-opacity="0.25" onclick="toggleMuscle('abs')"/>
-        <path class="muscle" data-key="obliques" d="M155 165 Q148 185 150 210 Q158 215 163 205 Q162 183 164 163 Z M248 165 Q255 185 253 210 Q245 215 240 205 Q241 183 239 163 Z" fill="#7986cb" fill-opacity="0.25" onclick="toggleMuscle('obliques')"/>
-        <path class="muscle" data-key="traps" d="M170 75 Q165 88 170 98 Q178 95 185 92 Q192 88 200 88 Q208 88 215 92 Q222 95 230 98 Q235 88 230 75 Q215 68 200 68 Q185 68 170 75 Z" fill="#ce93d8" fill-opacity="0.25" onclick="toggleMuscle('traps')"/>
-        <path class="muscle" data-key="lats" d="M148 148 Q138 165 140 190 Q150 195 158 185 Q160 165 162 148 Z M252 148 Q262 165 260 190 Q250 195 242 185 Q240 165 238 148 Z" fill="#81d4fa" fill-opacity="0.25" onclick="toggleMuscle('lats')"/>
-        <path class="muscle" data-key="lower_back" d="M178 205 Q172 218 174 230 Q185 233 190 225 Q196 218 200 215 Q204 218 210 225 Q215 233 226 230 Q228 218 222 205 Q210 200 200 200 Q190 200 178 205 Z" fill="#ffcc02" fill-opacity="0.25" onclick="toggleMuscle('lower_back')"/>
-        <path class="muscle" data-key="glutes" d="M165 220 Q158 232 160 245 Q172 248 178 238 Q180 225 175 218 Z M235 220 Q242 232 240 245 Q228 248 222 238 Q220 225 225 218 Z" fill="#a1887f" fill-opacity="0.25" onclick="toggleMuscle('glutes')"/>
-        <path class="muscle" data-key="quads" d="M162 240 Q155 265 156 295 Q166 300 172 290 Q175 265 175 240 Z M185 240 Q190 265 192 295 Q182 300 178 290 Q178 265 182 240 Z M218 240 Q225 265 224 295 Q234 300 228 290 Q225 265 222 240 Z M238 240 Q245 265 244 295 Q234 300 230 290 Q230 265 235 240 Z" fill="#f06292" fill-opacity="0.25" onclick="toggleMuscle('quads')"/>
-        <path class="muscle" data-key="hamstrings" d="M165 245 Q158 268 160 298 Q170 302 175 292 Q176 267 175 243 Z M235 245 Q242 268 240 298 Q230 302 225 292 Q224 267 225 243 Z" fill="#ff8a65" fill-opacity="0.25" onclick="toggleMuscle('hamstrings')"/>
-        <path class="muscle" data-key="calves" d="M163 310 Q158 332 162 355 Q172 358 175 346 Q176 324 174 308 Z M237 310 Q242 332 238 355 Q228 358 225 346 Q224 324 226 308 Z" fill="#80cbc4" fill-opacity="0.25" onclick="toggleMuscle('calves')"/>
+      <!-- Body Map Tabs -->
+      <div style="display:flex;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+        <button id="view-front-btn" onclick="setView('front')" style="flex:1;padding:9px;background:var(--blue);color:#fff;border:none;font-family:Barlow,sans-serif;font-size:13px;font-weight:700;cursor:pointer">Front</button>
+        <button id="view-back-btn" onclick="setView('back')" style="flex:1;padding:9px;background:var(--bg3);color:var(--muted);border:none;font-family:Barlow,sans-serif;font-size:13px;font-weight:700;cursor:pointer">Back</button>
+      </div>
+
+      <!-- FRONT VIEW -->
+      <div id="view-front">
+      <svg id="body-map-front" viewBox="0 0 200 420" width="200" height="420" style="display:block;margin:0 auto">
+        <!-- Skin base -->
+        <defs>
+          <radialGradient id="skingrad" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#c8a882"/>
+            <stop offset="100%" stop-color="#a07850"/>
+          </radialGradient>
+          <radialGradient id="musclegrad" cx="50%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#e8c4a0"/>
+            <stop offset="100%" stop-color="#b08060"/>
+          </radialGradient>
+        </defs>
+
+        <!-- HEAD -->
+        <ellipse cx="100" cy="32" rx="24" ry="28" fill="#c8a882" stroke="#8a6040" stroke-width="1"/>
+        <!-- Neck -->
+        <rect x="91" y="55" width="18" height="18" rx="4" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <!-- Ears -->
+        <ellipse cx="76" cy="32" rx="5" ry="8" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="124" cy="32" rx="5" ry="8" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <!-- Face details -->
+        <ellipse cx="91" cy="28" rx="4" ry="5" fill="#a07850" fill-opacity="0.3"/>
+        <ellipse cx="109" cy="28" rx="4" ry="5" fill="#a07850" fill-opacity="0.3"/>
+        <path d="M93 40 Q100 44 107 40" stroke="#8a6040" stroke-width="1" fill="none"/>
+
+        <!-- TRAPEZIUS -->
+        <path class="muscle-front" data-key="traps"
+          d="M76 68 Q85 62 100 60 Q115 62 124 68 Q118 82 110 84 Q100 86 90 84 Q82 82 76 68Z"
+          fill="#c8654a" fill-opacity="0.35" stroke="#c8654a" stroke-width="0.5" onclick="toggleMuscle('traps')"/>
+
+        <!-- SHOULDERS (deltoids) -->
+        <path class="muscle-front" data-key="shoulders"
+          d="M60 80 Q68 70 76 68 Q82 76 80 90 Q72 96 62 92 Q56 88 60 80Z"
+          fill="#e08040" fill-opacity="0.35" stroke="#e08040" stroke-width="0.5" onclick="toggleMuscle('shoulders')"/>
+        <path class="muscle-front" data-key="shoulders"
+          d="M140 80 Q132 70 124 68 Q118 76 120 90 Q128 96 138 92 Q144 88 140 80Z"
+          fill="#e08040" fill-opacity="0.35" stroke="#e08040" stroke-width="0.5" onclick="toggleMuscle('shoulders')"/>
+
+        <!-- CHEST (pectorals) -->
+        <path class="muscle-front" data-key="chest"
+          d="M80 84 Q90 80 100 82 Q100 82 100 100 Q92 108 82 104 Q74 98 76 88Z"
+          fill="#e05555" fill-opacity="0.35" stroke="#e05555" stroke-width="0.5" onclick="toggleMuscle('chest')"/>
+        <path class="muscle-front" data-key="chest"
+          d="M120 84 Q110 80 100 82 Q100 82 100 100 Q108 108 118 104 Q126 98 124 88Z"
+          fill="#e05555" fill-opacity="0.35" stroke="#e05555" stroke-width="0.5" onclick="toggleMuscle('chest')"/>
+
+        <!-- BICEPS -->
+        <path class="muscle-front" data-key="biceps"
+          d="M58 94 Q54 100 53 114 Q55 122 62 122 Q68 118 68 108 Q68 98 62 94Z"
+          fill="#d4a017" fill-opacity="0.35" stroke="#d4a017" stroke-width="0.5" onclick="toggleMuscle('biceps')"/>
+        <path class="muscle-front" data-key="biceps"
+          d="M142 94 Q146 100 147 114 Q145 122 138 122 Q132 118 132 108 Q132 98 138 94Z"
+          fill="#d4a017" fill-opacity="0.35" stroke="#d4a017" stroke-width="0.5" onclick="toggleMuscle('biceps')"/>
+
+        <!-- TRICEPS (visible from front, sides) -->
+        <path class="muscle-front" data-key="triceps"
+          d="M56 96 Q50 104 50 118 Q52 126 58 126 Q60 118 58 106 Q57 100 56 96Z"
+          fill="#8bc34a" fill-opacity="0.35" stroke="#8bc34a" stroke-width="0.5" onclick="toggleMuscle('triceps')"/>
+        <path class="muscle-front" data-key="triceps"
+          d="M144 96 Q150 104 150 118 Q148 126 142 126 Q140 118 142 106 Q143 100 144 96Z"
+          fill="#8bc34a" fill-opacity="0.35" stroke="#8bc34a" stroke-width="0.5" onclick="toggleMuscle('triceps')"/>
+
+        <!-- FOREARMS -->
+        <path class="muscle-front" data-key="forearms"
+          d="M52 128 Q48 138 48 154 Q50 162 56 162 Q62 158 62 146 Q62 134 58 128Z"
+          fill="#26c6da" fill-opacity="0.35" stroke="#26c6da" stroke-width="0.5" onclick="toggleMuscle('forearms')"/>
+        <path class="muscle-front" data-key="forearms"
+          d="M148 128 Q152 138 152 154 Q150 162 144 162 Q138 158 138 146 Q138 134 142 128Z"
+          fill="#26c6da" fill-opacity="0.35" stroke="#26c6da" stroke-width="0.5" onclick="toggleMuscle('forearms')"/>
+
+        <!-- Hands -->
+        <ellipse cx="52" cy="168" rx="8" ry="10" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="148" cy="168" rx="8" ry="10" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- Torso body -->
+        <path d="M78 84 Q65 90 62 120 L62 200 Q62 210 70 212 L130 212 Q138 210 138 200 L138 120 Q135 90 122 84 Q110 80 100 82 Q90 80 78 84Z"
+          fill="#b89070" fill-opacity="0.15" stroke="#8a6040" stroke-width="1"/>
+
+        <!-- LATS (visible from front sides) -->
+        <path class="muscle-front" data-key="lats"
+          d="M64 110 Q62 130 64 155 Q70 160 76 150 Q78 130 76 108Z"
+          fill="#81d4fa" fill-opacity="0.35" stroke="#81d4fa" stroke-width="0.5" onclick="toggleMuscle('lats')"/>
+        <path class="muscle-front" data-key="lats"
+          d="M136 110 Q138 130 136 155 Q130 160 124 150 Q122 130 124 108Z"
+          fill="#81d4fa" fill-opacity="0.35" stroke="#81d4fa" stroke-width="0.5" onclick="toggleMuscle('lats')"/>
+
+        <!-- ABS (6-pack) -->
+        <path class="muscle-front" data-key="abs"
+          d="M88 108 Q94 106 100 107 Q100 120 100 120 Q94 121 88 120Z"
+          fill="#4fc3f7" fill-opacity="0.35" stroke="#4fc3f7" stroke-width="0.5" onclick="toggleMuscle('abs')"/>
+        <path class="muscle-front" data-key="abs"
+          d="M112 108 Q106 106 100 107 Q100 120 100 120 Q106 121 112 120Z"
+          fill="#4fc3f7" fill-opacity="0.35" stroke="#4fc3f7" stroke-width="0.5" onclick="toggleMuscle('abs')"/>
+        <path class="muscle-front" data-key="abs"
+          d="M88 122 Q94 121 100 122 Q100 134 100 134 Q94 135 88 134Z"
+          fill="#4fc3f7" fill-opacity="0.35" stroke="#4fc3f7" stroke-width="0.5" onclick="toggleMuscle('abs')"/>
+        <path class="muscle-front" data-key="abs"
+          d="M112 122 Q106 121 100 122 Q100 134 100 134 Q106 135 112 134Z"
+          fill="#4fc3f7" fill-opacity="0.35" stroke="#4fc3f7" stroke-width="0.5" onclick="toggleMuscle('abs')"/>
+        <path class="muscle-front" data-key="abs"
+          d="M88 136 Q94 135 100 136 Q100 148 100 148 Q94 149 88 148Z"
+          fill="#4fc3f7" fill-opacity="0.35" stroke="#4fc3f7" stroke-width="0.5" onclick="toggleMuscle('abs')"/>
+        <path class="muscle-front" data-key="abs"
+          d="M112 136 Q106 135 100 136 Q100 148 100 148 Q106 149 112 148Z"
+          fill="#4fc3f7" fill-opacity="0.35" stroke="#4fc3f7" stroke-width="0.5" onclick="toggleMuscle('abs')"/>
+
+        <!-- OBLIQUES -->
+        <path class="muscle-front" data-key="obliques"
+          d="M78 120 Q84 128 84 150 Q80 158 74 154 Q68 144 70 128Z"
+          fill="#7986cb" fill-opacity="0.35" stroke="#7986cb" stroke-width="0.5" onclick="toggleMuscle('obliques')"/>
+        <path class="muscle-front" data-key="obliques"
+          d="M122 120 Q116 128 116 150 Q120 158 126 154 Q132 144 130 128Z"
+          fill="#7986cb" fill-opacity="0.35" stroke="#7986cb" stroke-width="0.5" onclick="toggleMuscle('obliques')"/>
+
+        <!-- Hip/pelvis -->
+        <path d="M70 210 Q100 218 130 210 L132 230 Q100 238 68 230Z" fill="#b89070" fill-opacity="0.2" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- QUADS -->
+        <path class="muscle-front" data-key="quads"
+          d="M72 232 Q68 260 68 290 Q72 308 80 308 Q88 304 88 288 Q90 260 86 232Z"
+          fill="#f06292" fill-opacity="0.35" stroke="#f06292" stroke-width="0.5" onclick="toggleMuscle('quads')"/>
+        <path class="muscle-front" data-key="quads"
+          d="M86 232 Q90 260 90 288 Q90 306 98 308 Q104 306 104 286 Q104 258 102 232Z"
+          fill="#f06292" fill-opacity="0.35" stroke="#f06292" stroke-width="0.5" onclick="toggleMuscle('quads')"/>
+        <path class="muscle-front" data-key="quads"
+          d="M114 232 Q110 260 110 288 Q110 306 102 308 Q96 306 96 286 Q96 258 98 232Z"
+          fill="#f06292" fill-opacity="0.35" stroke="#f06292" stroke-width="0.5" onclick="toggleMuscle('quads')"/>
+        <path class="muscle-front" data-key="quads"
+          d="M128 232 Q132 260 132 290 Q128 308 120 308 Q112 304 112 288 Q110 260 114 232Z"
+          fill="#f06292" fill-opacity="0.35" stroke="#f06292" stroke-width="0.5" onclick="toggleMuscle('quads')"/>
+
+        <!-- GLUTES front hint -->
+        <path class="muscle-front" data-key="glutes"
+          d="M72 210 Q68 222 70 232 Q80 236 88 232 Q90 220 86 210Z"
+          fill="#a1887f" fill-opacity="0.25" stroke="#a1887f" stroke-width="0.5" onclick="toggleMuscle('glutes')"/>
+        <path class="muscle-front" data-key="glutes"
+          d="M128 210 Q132 222 130 232 Q120 236 112 232 Q110 220 114 210Z"
+          fill="#a1887f" fill-opacity="0.25" stroke="#a1887f" stroke-width="0.5" onclick="toggleMuscle('glutes')"/>
+
+        <!-- Knee caps -->
+        <ellipse cx="80" cy="314" rx="12" ry="10" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="120" cy="314" rx="12" ry="10" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- CALVES (front) -->
+        <path class="muscle-front" data-key="calves"
+          d="M70 326 Q68 352 70 372 Q76 380 82 376 Q86 364 86 344 Q86 330 82 324Z"
+          fill="#80cbc4" fill-opacity="0.35" stroke="#80cbc4" stroke-width="0.5" onclick="toggleMuscle('calves')"/>
+        <path class="muscle-front" data-key="calves"
+          d="M130 326 Q132 352 130 372 Q124 380 118 376 Q114 364 114 344 Q114 330 118 324Z"
+          fill="#80cbc4" fill-opacity="0.35" stroke="#80cbc4" stroke-width="0.5" onclick="toggleMuscle('calves')"/>
+
+        <!-- Feet -->
+        <ellipse cx="78" cy="386" rx="14" ry="8" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="122" cy="386" rx="14" ry="8" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- Arms body -->
+        <path d="M60 80 Q50 90 46 130 L46 164 Q50 174 56 174 L58 128 Q58 98 62 84Z" fill="#b89070" fill-opacity="0.15" stroke="#8a6040" stroke-width="0.8"/>
+        <path d="M140 80 Q150 90 154 130 L154 164 Q150 174 144 174 L142 128 Q142 98 138 84Z" fill="#b89070" fill-opacity="0.15" stroke="#8a6040" stroke-width="0.8"/>
+        <!-- Legs body -->
+        <path d="M70 212 L66 324 Q68 330 80 332 L82 322 L68 232Z" fill="#b89070" fill-opacity="0.1"/>
+        <path d="M130 212 L134 324 Q132 330 120 332 L118 322 L132 232Z" fill="#b89070" fill-opacity="0.1"/>
       </svg>
+      </div>
+
+      <!-- BACK VIEW -->
+      <div id="view-back" style="display:none">
+      <svg id="body-map-back" viewBox="0 0 200 420" width="200" height="420" style="display:block;margin:0 auto">
+        <!-- HEAD back -->
+        <ellipse cx="100" cy="32" rx="24" ry="28" fill="#b89070" stroke="#8a6040" stroke-width="1"/>
+        <ellipse cx="76" cy="32" rx="5" ry="8" fill="#a07850" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="124" cy="32" rx="5" ry="8" fill="#a07850" stroke="#8a6040" stroke-width="0.8"/>
+        <!-- Neck back -->
+        <rect x="91" y="55" width="18" height="18" rx="4" fill="#a07850" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- TRAPS back (large) -->
+        <path class="muscle-back" data-key="traps"
+          d="M72 64 Q86 58 100 60 Q114 58 128 64 Q124 86 112 90 Q100 94 88 90 Q76 86 72 64Z"
+          fill="#ce93d8" fill-opacity="0.4" stroke="#ce93d8" stroke-width="0.5" onclick="toggleMuscle('traps')"/>
+
+        <!-- REAR SHOULDERS -->
+        <path class="muscle-back" data-key="shoulders"
+          d="M58 78 Q66 68 74 66 Q78 78 76 92 Q68 98 60 94 Q54 88 58 78Z"
+          fill="#e08040" fill-opacity="0.4" stroke="#e08040" stroke-width="0.5" onclick="toggleMuscle('shoulders')"/>
+        <path class="muscle-back" data-key="shoulders"
+          d="M142 78 Q134 68 126 66 Q122 78 124 92 Q132 98 140 94 Q146 88 142 78Z"
+          fill="#e08040" fill-opacity="0.4" stroke="#e08040" stroke-width="0.5" onclick="toggleMuscle('shoulders')"/>
+
+        <!-- LATS back (large) -->
+        <path class="muscle-back" data-key="lats"
+          d="M66 94 Q62 120 64 155 Q70 165 80 158 Q86 140 84 110 Q80 92 72 88Z"
+          fill="#81d4fa" fill-opacity="0.4" stroke="#81d4fa" stroke-width="0.5" onclick="toggleMuscle('lats')"/>
+        <path class="muscle-back" data-key="lats"
+          d="M134 94 Q138 120 136 155 Q130 165 120 158 Q114 140 116 110 Q120 92 128 88Z"
+          fill="#81d4fa" fill-opacity="0.4" stroke="#81d4fa" stroke-width="0.5" onclick="toggleMuscle('lats')"/>
+
+        <!-- TRICEPS back -->
+        <path class="muscle-back" data-key="triceps"
+          d="M56 94 Q50 104 50 120 Q52 130 60 130 Q64 122 64 108 Q62 98 58 94Z"
+          fill="#8bc34a" fill-opacity="0.4" stroke="#8bc34a" stroke-width="0.5" onclick="toggleMuscle('triceps')"/>
+        <path class="muscle-back" data-key="triceps"
+          d="M144 94 Q150 104 150 120 Q148 130 140 130 Q136 122 136 108 Q138 98 142 94Z"
+          fill="#8bc34a" fill-opacity="0.4" stroke="#8bc34a" stroke-width="0.5" onclick="toggleMuscle('triceps')"/>
+
+        <!-- FOREARMS back -->
+        <path class="muscle-back" data-key="forearms"
+          d="M50 132 Q46 144 46 158 Q48 166 56 166 Q62 160 62 148 Q62 136 58 130Z"
+          fill="#26c6da" fill-opacity="0.4" stroke="#26c6da" stroke-width="0.5" onclick="toggleMuscle('forearms')"/>
+        <path class="muscle-back" data-key="forearms"
+          d="M150 132 Q154 144 154 158 Q152 166 144 166 Q138 160 138 148 Q138 136 142 130Z"
+          fill="#26c6da" fill-opacity="0.4" stroke="#26c6da" stroke-width="0.5" onclick="toggleMuscle('forearms')"/>
+
+        <!-- Hands -->
+        <ellipse cx="50" cy="172" rx="8" ry="10" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="150" cy="172" rx="8" ry="10" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- LOWER BACK -->
+        <path class="muscle-back" data-key="lower_back"
+          d="M82 160 Q90 156 100 158 Q110 156 118 160 Q120 180 118 196 Q110 200 100 200 Q90 200 82 196 Q80 180 82 160Z"
+          fill="#ffcc02" fill-opacity="0.4" stroke="#ffcc02" stroke-width="0.5" onclick="toggleMuscle('lower_back')"/>
+
+        <!-- Torso body back -->
+        <path d="M76 88 Q64 96 62 130 L62 210 Q66 218 100 220 Q134 218 138 210 L138 130 Q136 96 124 88Z"
+          fill="#b89070" fill-opacity="0.12" stroke="#8a6040" stroke-width="1"/>
+        <!-- Arms body -->
+        <path d="M58 80 Q48 92 44 132 L44 168 L50 174 L52 130 Q54 96 60 82Z" fill="#b89070" fill-opacity="0.15" stroke="#8a6040" stroke-width="0.8"/>
+        <path d="M142 80 Q152 92 156 132 L156 168 L150 174 L148 130 Q146 96 140 82Z" fill="#b89070" fill-opacity="0.15" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- GLUTES back (large) -->
+        <path class="muscle-back" data-key="glutes"
+          d="M68 210 Q66 228 70 244 Q80 252 92 248 Q100 242 100 232 Q100 218 96 210Z"
+          fill="#a1887f" fill-opacity="0.5" stroke="#a1887f" stroke-width="0.5" onclick="toggleMuscle('glutes')"/>
+        <path class="muscle-back" data-key="glutes"
+          d="M132 210 Q134 228 130 244 Q120 252 108 248 Q100 242 100 232 Q100 218 104 210Z"
+          fill="#a1887f" fill-opacity="0.5" stroke="#a1887f" stroke-width="0.5" onclick="toggleMuscle('glutes')"/>
+
+        <!-- HAMSTRINGS -->
+        <path class="muscle-back" data-key="hamstrings"
+          d="M70 248 Q66 272 66 296 Q70 312 78 312 Q86 308 88 292 Q90 268 86 248Z"
+          fill="#ff8a65" fill-opacity="0.4" stroke="#ff8a65" stroke-width="0.5" onclick="toggleMuscle('hamstrings')"/>
+        <path class="muscle-back" data-key="hamstrings"
+          d="M130 248 Q134 272 134 296 Q130 312 122 312 Q114 308 112 292 Q110 268 114 248Z"
+          fill="#ff8a65" fill-opacity="0.4" stroke="#ff8a65" stroke-width="0.5" onclick="toggleMuscle('hamstrings')"/>
+
+        <!-- Knee backs -->
+        <ellipse cx="80" cy="316" rx="12" ry="9" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="120" cy="316" rx="12" ry="9" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+
+        <!-- CALVES back (gastrocnemius) -->
+        <path class="muscle-back" data-key="calves"
+          d="M70 328 Q66 352 68 372 Q74 384 82 380 Q88 368 88 348 Q88 332 84 326Z"
+          fill="#80cbc4" fill-opacity="0.4" stroke="#80cbc4" stroke-width="0.5" onclick="toggleMuscle('calves')"/>
+        <path class="muscle-back" data-key="calves"
+          d="M130 328 Q134 352 132 372 Q126 384 118 380 Q112 368 112 348 Q112 332 116 326Z"
+          fill="#80cbc4" fill-opacity="0.4" stroke="#80cbc4" stroke-width="0.5" onclick="toggleMuscle('calves')"/>
+
+        <!-- Legs body back -->
+        <path d="M68 248 L64 326 Q66 332 80 334 L82 322 L66 248Z" fill="#b89070" fill-opacity="0.1"/>
+        <path d="M132 248 L136 326 Q134 332 120 334 L118 322 L134 248Z" fill="#b89070" fill-opacity="0.1"/>
+        <!-- Feet -->
+        <ellipse cx="78" cy="388" rx="14" ry="8" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+        <ellipse cx="122" cy="388" rx="14" ry="8" fill="#b89070" stroke="#8a6040" stroke-width="0.8"/>
+      </svg>
+      </div>
 
       <div class="muscle-pills" id="muscle-pills"></div>
 
@@ -530,15 +772,25 @@ function toggleMuscle(key) {
   updateMuscleUI();
 }
 
+function setView(view) {
+  document.getElementById('view-front').style.display = view === 'front' ? 'block' : 'none';
+  document.getElementById('view-back').style.display = view === 'back' ? 'block' : 'none';
+  document.getElementById('view-front-btn').style.background = view === 'front' ? 'var(--blue)' : 'var(--bg3)';
+  document.getElementById('view-front-btn').style.color = view === 'front' ? '#fff' : 'var(--muted)';
+  document.getElementById('view-back-btn').style.background = view === 'back' ? 'var(--blue)' : 'var(--bg3)';
+  document.getElementById('view-back-btn').style.color = view === 'back' ? '#fff' : 'var(--muted)';
+}
+
 function updateMuscleUI() {
   const m = MUSCLES;
-  // SVG
-  document.querySelectorAll('.muscle').forEach(path => {
+  // SVG - update both front and back views
+  document.querySelectorAll('.muscle-front, .muscle-back').forEach(path => {
     const key = path.dataset.key;
     const sel = selectedMuscles.includes(key);
-    path.style.fillOpacity = sel ? '0.85' : '0.25';
-    path.style.stroke = sel ? m[key].color : 'none';
-    path.style.strokeWidth = sel ? '2' : '0';
+    path.style.fillOpacity = sel ? '0.85' : (path.classList.contains('muscle-back') ? '0.4' : '0.35');
+    path.style.stroke = sel ? m[key].color : m[key].color;
+    path.style.strokeWidth = sel ? '2.5' : '0.5';
+    path.style.filter = sel ? 'brightness(1.3)' : 'none';
   });
   // Pills
   document.querySelectorAll('.muscle-pill').forEach(btn => {
@@ -677,10 +929,12 @@ function renderReview() {
   }
 
   w.exercises?.forEach((ex, i) => {
+    const gifId = 'gif-' + i;
+    const ytQuery = encodeURIComponent(ex.name + ' exercise tutorial');
     html += `
     <div class="ex-row">
       <div class="flex-between">
-        <div>
+        <div style="flex:1">
           <div class="ex-name">${ex.name}</div>
           <div class="ex-meta">${ex.muscleTargets?.join(', ')}</div>
         </div>
@@ -689,10 +943,19 @@ function renderReview() {
           <div class="ex-meta">rest ${ex.restSeconds}s</div>
         </div>
       </div>
+      <div id="${gifId}" style="margin:10px 0;border-radius:10px;overflow:hidden;background:var(--bg3);min-height:60px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:12px;color:var(--muted)">Loading demo...</span>
+      </div>
+      <a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank"
+        style="display:inline-block;font-size:12px;color:var(--accent);text-decoration:none;margin-bottom:6px">
+        ▶ Watch tutorial on YouTube
+      </a>
       ${ex.notes ? `<div class="tip">${ex.notes}</div>` : ''}
       ${ex.weightSuggestion ? `<div class="tip">💡 ${ex.weightSuggestion}</div>` : ''}
     </div>`;
   });
+  // Load GIFs from wger after rendering
+  setTimeout(() => loadExerciseGifs(w.exercises), 100);
 
   if (w.notes) {
     html += `<div class="card-sm mt-12" style="color:var(--muted);font-size:13px">${w.notes}</div>`;
@@ -962,6 +1225,39 @@ function saveApiKey() {
   ANTHROPIC_KEY = key;
   localStorage.setItem('gymapp_apikey', key);
   showScreen('login');
+}
+
+
+// ══════════════════════════════════════════════════════
+// EXERCISE GIF LOADER
+// ══════════════════════════════════════════════════════
+async function loadExerciseGifs(exercises) {
+  for (let i = 0; i < exercises.length; i++) {
+    const ex = exercises[i];
+    const gifEl = document.getElementById('gif-' + i);
+    if (!gifEl) continue;
+    try {
+      const name = ex.name.split(' ')[0].toLowerCase();
+      const res = await fetch(`https://wger.de/api/v2/exercise/?format=json&language=2&limit=5&offset=0&term=${encodeURIComponent(ex.name)}`);
+      const data = await res.json();
+      // Try to find a matching exercise with an image
+      const exId = data.results?.[0]?.id;
+      if (exId) {
+        const imgRes = await fetch(`https://wger.de/api/v2/exerciseimage/?format=json&exercise_base=${exId}`);
+        const imgData = await imgRes.json();
+        if (imgData.results?.length > 0) {
+          const imgUrl = imgData.results[0].image;
+          gifEl.innerHTML = `<img src="${imgUrl}" style="width:100%;border-radius:10px;display:block" alt="${ex.name}" onerror="this.parentElement.innerHTML='<span style=\'font-size:12px;color:var(--muted);padding:12px\''>No image available</span>'" />`;
+        } else {
+          gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:12px">No image available</span>`;
+        }
+      } else {
+        gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:12px">No image available</span>`;
+      }
+    } catch(e) {
+      gifEl.innerHTML = `<span style="font-size:12px;color:var(--muted);padding:12px">Could not load image</span>`;
+    }
+  }
 }
 
 // INIT
